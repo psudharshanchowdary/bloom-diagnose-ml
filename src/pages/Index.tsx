@@ -36,35 +36,61 @@ const Index = () => {
     setIsAnalyzing(true);
     scrollToAnalysis();
 
-    // Simulate API call - In production, this would call your ML backend
-    setTimeout(() => {
-      // Mock result - replace with actual API call
+    try {
+      const formData = new FormData();
+      formData.append('image', selectedImage);
+      
+      const response = await fetch('http://localhost:5000/predict', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Prediction failed');
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        const result = {
+          disease: `${data.disease} (${data.plant})`,
+          confidence: Math.round(data.confidence * 100),
+          severity: data.confidence > 0.8 ? "high" as const : data.confidence > 0.5 ? "medium" as const : "low" as const,
+          description: `${data.causes} ${data.symptoms}`,
+          treatment: data.treatment.split('.').filter((s: string) => s.trim()).map((s: string) => s.trim()),
+          prevention: data.prevention.split('.').filter((s: string) => s.trim()).map((s: string) => s.trim())
+        };
+        setAnalysisResult(result);
+        toast.success("Analysis complete!");
+      } else {
+        throw new Error(data.error || 'Prediction failed');
+      }
+    } catch (error) {
+      console.error('Analysis error:', error);
+      toast.error('ML backend not connected. See ml_backend/README.md for setup.');
+      
+      // Fallback to mock data
       const mockResult = {
-        disease: "Early Blight (Alternaria solani)",
-        confidence: 87,
-        severity: "medium" as const,
-        description: "Early blight is a common fungal disease affecting tomatoes and potatoes. It typically appears as dark brown spots with concentric rings on older leaves.",
+        disease: "ML Backend Not Running",
+        confidence: 0,
+        severity: "low" as const,
+        description: "The Python ML backend is not running. To use the trained model: 1) cd ml_backend 2) pip install -r requirements.txt 3) python train_model.py (train first) 4) python app.py (start API)",
         treatment: [
-          "Remove and destroy infected leaves immediately",
-          "Apply copper-based fungicide every 7-10 days",
-          "Improve air circulation around plants",
-          "Water at the base of plants to keep foliage dry",
-          "Consider organic options like neem oil or baking soda spray"
+          "Install dependencies: pip install -r ml_backend/requirements.txt",
+          "Train the model: python ml_backend/train_model.py",
+          "Start the API server: python ml_backend/app.py",
+          "Make sure the server runs on http://localhost:5000"
         ],
         prevention: [
-          "Practice crop rotation (3-4 year cycle)",
-          "Space plants properly for good air circulation",
-          "Apply mulch to prevent soil splash onto leaves",
-          "Water in the morning so leaves dry during the day",
-          "Use disease-resistant varieties when available",
-          "Remove plant debris at the end of the season"
+          "Download PlantVillage dataset for training",
+          "See ml_backend/README.md for detailed setup instructions",
+          "Ensure Python 3.8+ is installed on your system"
         ]
       };
-
       setAnalysisResult(mockResult);
+    } finally {
       setIsAnalyzing(false);
-      toast.success("Analysis complete!");
-    }, 2500);
+    }
   };
 
   return (
