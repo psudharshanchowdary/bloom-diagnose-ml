@@ -176,6 +176,66 @@ const Index = () => {
         </div>
       </section>
 
+      {/* About & Contact Section */}
+      <section id="about" className="py-16 bg-background">
+        <div className="container px-4">
+          <div className="max-w-4xl mx-auto space-y-12">
+            {/* About Project */}
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold">About PlantHealth AI</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                PlantHealth AI is an advanced machine learning-powered platform designed to detect and diagnose plant diseases with high accuracy. 
+                Using deep learning algorithms trained on thousands of plant images, our system identifies diseases in Apple, Tomato, and Potato crops, 
+                providing farmers and gardeners with instant diagnosis, treatment recommendations, and prevention strategies. 
+                Our mission is to help protect crops and improve agricultural productivity through accessible AI technology.
+              </p>
+            </div>
+
+            {/* Team */}
+            <div className="space-y-4">
+              <h3 className="text-2xl font-semibold text-center">Our Team</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-muted/30 rounded-lg p-4 text-center">
+                  <p className="font-medium">P. Sudharshan</p>
+                </div>
+                <div className="bg-muted/30 rounded-lg p-4 text-center">
+                  <p className="font-medium">P. Saikumar</p>
+                </div>
+                <div className="bg-muted/30 rounded-lg p-4 text-center">
+                  <p className="font-medium">K. Arundhathi</p>
+                </div>
+                <div className="bg-muted/30 rounded-lg p-4 text-center">
+                  <p className="font-medium">S. Gunashekhar</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact */}
+            <div className="space-y-4">
+              <h3 className="text-2xl font-semibold text-center">Contact Us</h3>
+              <div className="bg-muted/30 rounded-lg p-6 space-y-3">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  <a href="tel:+919087321929" className="hover:text-foreground transition-colors">
+                    +91 9087321929
+                  </a>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <a href="mailto:srm@gmail.com" className="hover:text-foreground transition-colors">
+                    srm@gmail.com
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-border bg-muted/20 py-12">
         <div className="container px-4">
