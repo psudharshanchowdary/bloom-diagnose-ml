@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Hero } from "@/components/Hero";
 import { ImageUpload } from "@/components/ImageUpload";
 import { AnalysisResults } from "@/components/AnalysisResults";
+import { DiseasesDialog } from "@/components/DiseasesDialog";
 import { Button } from "@/components/ui/button";
 import { Leaf, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -176,8 +177,26 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Diseases Section */}
+      <section id="diseases" className="py-16 bg-background">
+        <div className="container px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <div className="space-y-3">
+              <h2 className="text-3xl font-bold">Supported Plant Diseases</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Our AI model can detect and diagnose various diseases affecting Apple, Tomato, and Potato crops. 
+                Learn more about each disease, its symptoms, treatment options, and prevention strategies.
+              </p>
+            </div>
+            <div className="flex justify-center pt-4">
+              <DiseasesDialog />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* About & Contact Section */}
-      <section id="about" className="py-16 bg-background">
+      <section id="about" className="py-16 bg-muted/30">
         <div className="container px-4">
           <div className="max-w-4xl mx-auto space-y-12">
             {/* About Project */}
