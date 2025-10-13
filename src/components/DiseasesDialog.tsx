@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle, Info } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { AlertCircle, CheckCircle, Info, Search } from "lucide-react";
 
 const diseasesData = [
   {
@@ -263,6 +265,24 @@ export const DiseasesDialog = () => {
     }
   };
 
+  const [query, setQuery] = React.useState("");
+  const [appliedQuery, setAppliedQuery] = React.useState("");
+  const filtered = React.useMemo(() => {
+    const q = appliedQuery.trim().toLowerCase();
+    if (!q) return diseasesData;
+    return diseasesData.filter((d) =>
+      [d.name, d.plant, d.description, d.symptoms, ...d.treatment, ...d.prevention]
+        .join(" ")
+        .toLowerCase()
+        .includes(q)
+    );
+  }, [appliedQuery]);
+
+  const onSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAppliedQuery(query);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -278,9 +298,37 @@ export const DiseasesDialog = () => {
             Comprehensive information about common plant diseases affecting Apple, Tomato, and Potato crops
           </DialogDescription>
         </DialogHeader>
+        <div className="mt-2 space-y-3">
+          <form onSubmit={onSearchSubmit} className="flex items-center gap-2">
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search diseases, symptoms, treatment..."
+              className="flex-1"
+              aria-label="Search diseases"
+            />
+            <Button type="submit" variant="default" className="gap-2">
+              <Search className="h-4 w-4" />
+              Search
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                setQuery("");
+                setAppliedQuery("");
+              }}
+            >
+              Clear
+            </Button>
+          </form>
+          <p className="text-xs text-muted-foreground">
+            Showing {filtered.length} of {diseasesData.length} diseases
+          </p>
+        </div>
         <ScrollArea className="h-[60vh] pr-4">
           <div className="space-y-6">
-            {diseasesData.map((disease, index) => (
+            {filtered.map((disease, index) => (
               <div
                 key={index}
                 className="border border-border rounded-lg p-6 space-y-4 bg-card"
