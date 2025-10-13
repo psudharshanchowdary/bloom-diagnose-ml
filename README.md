@@ -1,73 +1,156 @@
-# Welcome to your Lovable project
+# Plant Disease Detection System
 
-## Project info
+AI-powered plant disease detection using Machine Learning and Digital Image Processing.
 
-**URL**: https://lovable.dev/projects/b5c83364-5e6a-44f5-8fef-27270bc38230
+## 🚀 Quick Start Guide
 
-## How can I edit this code?
+### Prerequisites
+- **Node.js** (v18+) - [Install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Python** (v3.8+) - [Download Python](https://www.python.org/downloads/)
+- **VS Code** (recommended) - [Download VS Code](https://code.visualstudio.com/)
 
-There are several ways of editing your application.
+### 📦 Installation & Setup
 
-**Use Lovable**
+#### Step 1: Open Project in VS Code
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b5c83364-5e6a-44f5-8fef-27270bc38230) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone the repository (if not already cloned)
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to project directory
+cd plant-disease-detection
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Open in VS Code
+code .
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+#### Step 2: Setup Frontend (React + Vite)
+
+Open a terminal in VS Code (Terminal → New Terminal) and run:
+
+```bash
+# Install frontend dependencies
+npm install
+
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The frontend will run on **http://localhost:8080**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+#### Step 3: Setup ML Backend (Python + TensorFlow)
 
-**Use GitHub Codespaces**
+Open a **new terminal** in VS Code (click the + icon in terminal panel):
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+# Navigate to ML backend directory
+cd ml_backend
 
-## What technologies are used for this project?
+# Install Python dependencies
+pip install -r requirements.txt
 
-This project is built with:
+# Optional: Download PlantVillage dataset
+# https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset
 
+# Train the model (one-time setup, takes 15-30 minutes)
+python train_model.py
+
+# Start the API server
+python app.py
+```
+
+The ML backend will run on **http://localhost:5000**
+
+### ✅ Verify Setup
+
+1. Frontend: Open http://localhost:8080 in your browser
+2. Backend: Check http://localhost:5000/health - should show `{"status": "healthy"}`
+3. Upload a plant image and click "Analyze Disease"
+
+## 🗂️ Project Structure
+
+```
+plant-disease-detection/
+├── src/                          # Frontend React application
+│   ├── components/               # React components
+│   │   ├── Hero.tsx             # Landing section
+│   │   ├── ImageUpload.tsx      # Image upload interface
+│   │   └── AnalysisResults.tsx  # Disease results display
+│   ├── pages/                   # Page components
+│   └── index.css                # Design system & styles
+├── ml_backend/                   # Python ML backend
+│   ├── app.py                   # Flask API server
+│   ├── train_model.py           # Model training script
+│   ├── requirements.txt         # Python dependencies
+│   └── README.md                # ML backend documentation
+└── README.md                    # This file
+```
+
+## 🧠 Supported Plant Diseases
+
+**Apple:** Apple Scab, Black Rot, Cedar Apple Rust, Healthy
+**Tomato:** Bacterial Spot, Early Blight, Late Blight, Leaf Mold, Healthy
+**Potato:** Early Blight, Late Blight, Healthy
+
+## 🛠️ VS Code Setup Tips
+
+### Recommended Extensions
+- **ESLint** - JavaScript/TypeScript linting
+- **Prettier** - Code formatting
+- **Python** - Python language support
+- **Pylance** - Python IntelliSense
+
+### Running Both Servers Simultaneously
+
+1. **Split Terminal**: Click the split icon in VS Code terminal
+2. **Terminal 1**: Run `npm run dev` (Frontend)
+3. **Terminal 2**: Run `cd ml_backend && python app.py` (Backend)
+
+### Troubleshooting
+
+**Frontend won't start:**
+```bash
+rm -rf node_modules package-lock.json
+npm install
+npm run dev
+```
+
+**Backend errors:**
+```bash
+# Check Python version
+python --version  # Should be 3.8+
+
+# Reinstall dependencies
+pip install --upgrade -r ml_backend/requirements.txt
+```
+
+**"Failed to fetch" errors:**
+- Ensure ML backend is running on http://localhost:5000
+- Check CORS is enabled in `ml_backend/app.py`
+- Verify no firewall blocking localhost:5000
+
+## 📚 Technologies Used
+
+**Frontend:**
+- React + TypeScript
 - Vite
-- TypeScript
-- React
-- shadcn-ui
 - Tailwind CSS
+- shadcn-ui components
 
-## How can I deploy this project?
+**ML Backend:**
+- TensorFlow/Keras
+- Flask + Flask-CORS
+- MobileNetV2 (Transfer Learning)
+- PIL for image processing
 
-Simply open [Lovable](https://lovable.dev/projects/b5c83364-5e6a-44f5-8fef-27270bc38230) and click on Share -> Publish.
+## 🌐 Deployment
 
-## Can I connect a custom domain to my Lovable project?
+Frontend: [Lovable](https://lovable.dev/projects/b5c83364-5e6a-44f5-8fef-27270bc38230) → Share → Publish
 
-Yes, you can!
+Backend: Deploy to services like Railway, Render, or AWS EC2
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📖 Additional Resources
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- [ML Backend Documentation](ml_backend/README.md)
+- [Lovable Documentation](https://docs.lovable.dev)
+- [PlantVillage Dataset](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset)

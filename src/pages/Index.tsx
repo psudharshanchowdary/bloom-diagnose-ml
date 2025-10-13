@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Hero } from "@/components/Hero";
 import { ImageUpload } from "@/components/ImageUpload";
 import { AnalysisResults } from "@/components/AnalysisResults";
+import { DiseasesDialog } from "@/components/DiseasesDialog";
 import { Button } from "@/components/ui/button";
 import { Leaf, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -36,35 +37,61 @@ const Index = () => {
     setIsAnalyzing(true);
     scrollToAnalysis();
 
-    // Simulate API call - In production, this would call your ML backend
-    setTimeout(() => {
-      // Mock result - replace with actual API call
+    try {
+      const formData = new FormData();
+      formData.append('image', selectedImage);
+      
+      const response = await fetch('http://localhost:5000/predict', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Prediction failed');
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        const result = {
+          disease: `${data.disease} (${data.plant})`,
+          confidence: Math.round(data.confidence * 100),
+          severity: data.confidence > 0.8 ? "high" as const : data.confidence > 0.5 ? "medium" as const : "low" as const,
+          description: `${data.causes} ${data.symptoms}`,
+          treatment: data.treatment.split('.').filter((s: string) => s.trim()).map((s: string) => s.trim()),
+          prevention: data.prevention.split('.').filter((s: string) => s.trim()).map((s: string) => s.trim())
+        };
+        setAnalysisResult(result);
+        toast.success("Analysis complete!");
+      } else {
+        throw new Error(data.error || 'Prediction failed');
+      }
+    } catch (error) {
+      console.error('Analysis error:', error);
+      toast.error('ML backend not connected. See ml_backend/README.md for setup.');
+      
+      // Fallback to mock data
       const mockResult = {
-        disease: "Early Blight (Alternaria solani)",
-        confidence: 87,
-        severity: "medium" as const,
-        description: "Early blight is a common fungal disease affecting tomatoes and potatoes. It typically appears as dark brown spots with concentric rings on older leaves.",
+        disease: "ML Backend Not Running",
+        confidence: 0,
+        severity: "low" as const,
+        description: "The Python ML backend is not running. To use the trained model: 1) cd ml_backend 2) pip install -r requirements.txt 3) python train_model.py (train first) 4) python app.py (start API)",
         treatment: [
-          "Remove and destroy infected leaves immediately",
-          "Apply copper-based fungicide every 7-10 days",
-          "Improve air circulation around plants",
-          "Water at the base of plants to keep foliage dry",
-          "Consider organic options like neem oil or baking soda spray"
+          "Install dependencies: pip install -r ml_backend/requirements.txt",
+          "Train the model: python ml_backend/train_model.py",
+          "Start the API server: python ml_backend/app.py",
+          "Make sure the server runs on http://localhost:5000"
         ],
         prevention: [
-          "Practice crop rotation (3-4 year cycle)",
-          "Space plants properly for good air circulation",
-          "Apply mulch to prevent soil splash onto leaves",
-          "Water in the morning so leaves dry during the day",
-          "Use disease-resistant varieties when available",
-          "Remove plant debris at the end of the season"
+          "Download PlantVillage dataset for training",
+          "See ml_backend/README.md for detailed setup instructions",
+          "Ensure Python 3.8+ is installed on your system"
         ]
       };
-
       setAnalysisResult(mockResult);
+    } finally {
       setIsAnalyzing(false);
-      toast.success("Analysis complete!");
-    }, 2500);
+    }
   };
 
   return (
@@ -146,6 +173,84 @@ const Index = () => {
             {(isAnalyzing || analysisResult) && (
               <AnalysisResults result={analysisResult} isLoading={isAnalyzing} />
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Diseases Section */}
+      <section id="diseases" className="py-16 bg-background">
+        <div className="container px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <div className="space-y-3">
+              <h2 className="text-3xl font-bold">Supported Plant Diseases</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Our AI model can detect and diagnose various diseases affecting Apple, Tomato, and Potato crops. 
+                Learn more about each disease, its symptoms, treatment options, and prevention strategies.
+              </p>
+            </div>
+            <div className="flex justify-center pt-4">
+              <DiseasesDialog />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About & Contact Section */}
+      <section id="about" className="py-16 bg-muted/30">
+        <div className="container px-4">
+          <div className="max-w-4xl mx-auto space-y-12">
+            {/* About Project */}
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold">About PlantHealth AI</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                PlantHealth AI is an advanced machine learning-powered platform designed to detect and diagnose plant diseases with high accuracy. 
+                Using deep learning algorithms trained on thousands of plant images, our system identifies diseases in Apple, Tomato, and Potato crops, 
+                providing farmers and gardeners with instant diagnosis, treatment recommendations, and prevention strategies. 
+                Our mission is to help protect crops and improve agricultural productivity through accessible AI technology.
+              </p>
+            </div>
+
+            {/* Team */}
+            <div className="space-y-4">
+              <h3 className="text-2xl font-semibold text-center">Our Team</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-muted/30 rounded-lg p-4 text-center">
+                  <p className="font-medium">P. Sudharshan</p>
+                </div>
+                <div className="bg-muted/30 rounded-lg p-4 text-center">
+                  <p className="font-medium">P. Saikumar</p>
+                </div>
+                <div className="bg-muted/30 rounded-lg p-4 text-center">
+                  <p className="font-medium">K. Arundhathi</p>
+                </div>
+                <div className="bg-muted/30 rounded-lg p-4 text-center">
+                  <p className="font-medium">S. Gunashekhar</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact */}
+            <div className="space-y-4">
+              <h3 className="text-2xl font-semibold text-center">Contact Us</h3>
+              <div className="bg-muted/30 rounded-lg p-6 space-y-3">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  <a href="tel:+919087321929" className="hover:text-foreground transition-colors">
+                    +91 9087321929
+                  </a>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <a href="mailto:srm@gmail.com" className="hover:text-foreground transition-colors">
+                    srm@gmail.com
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
